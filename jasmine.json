@@ -3,7 +3,7 @@
   "spec_files": ["**/*.test.ts"],
   "helpers": [
     "../node_modules/ts-node/register/type-check.js",
-    "../src/test-helper.ts"
+    "../src/index.ts"
   ],
   "stopSpecOnExpectationFailure": false,
   "random": true

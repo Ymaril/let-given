@@ -1,6 +1,6 @@
 {
-  "name": "self-givens",
-  "version": "1.0.0",
+  "name": "let-given",
+  "version": "1.0.2",
   "main": "index.js",
   "license": "MIT",
   "scripts": {

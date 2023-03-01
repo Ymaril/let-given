@@ -1,4 +1,4 @@
-import Given from "../src/given";
+import Given from "./given";
 
 let given: Given;
 const unWrappedIt = global['it']; 

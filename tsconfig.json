@@ -8,6 +8,7 @@
     "skipLibCheck": true,
     "moduleResolution": "node",
     "sourceMap": true,
-    "removeComments": false
+    "removeComments": false,
+    "outDir": "dist"
   }
 }

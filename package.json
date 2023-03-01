@@ -6,7 +6,8 @@
   "scripts": {
     "test": "jasmine --config=jasmine.json",
     "test:fancy": "jasmine --reporter=jasmine-console-reporter --config=jasmine.json",
-    "coverage": "nyc npm run test && nyc report --reporter=html"
+    "coverage": "nyc npm run test && nyc report --reporter=html",
+    "build": "tsc --project tsconfig.build.json"
   },
   "devDependencies": {
     "@types/jasmine": "^4.0.3",

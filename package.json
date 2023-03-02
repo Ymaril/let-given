@@ -1,8 +1,9 @@
 {
   "name": "let-given",
-  "version": "1.0.2",
-  "main": "index.js",
+  "version": "0.0.1",
   "license": "MIT",
+  "main": "dist/useGiven.js",
+  "typings": "dist/useGiven.d.ts",
   "scripts": {
     "test": "jasmine --config=jasmine.json \"tests/typescript**/*.test.ts\"",
     "test:build": "jasmine --config=jasmine.json \"tests/javascript**/*.test.js\"",

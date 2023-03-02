@@ -1,8 +1,8 @@
-interface GivenData {
+interface GivenData<T> {
   func: Function,
   value?: any,
   isLoaded: boolean,
-  dependencies: string[]
+  dependencies: T[]
 }
 var COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
 var DEFAULT_PARAMS = /=[^,]+/mg;
@@ -22,14 +22,23 @@ function getParamNames(fn: Function) {
     : result;
 }
 
-export default class Given {
-  private data: {[key: string]: GivenData} = {};
+export default class Given<T extends Record<string, any>> {
+  private data: Record<
+    keyof Partial<T>, 
+    GivenData<keyof Partial<T>>
+  > = {} as Record<
+    keyof Partial<T>,
+    GivenData<keyof Partial<T>>
+  >;
 
-  public add(key: string, func: Function, dependencies: string[] = []) {
+  public add<
+    K extends keyof Partial<T>,
+    D extends keyof Partial<T>
+  >(key: K, func: (...args: T[D][]) => T[K] | Promise<T[K]>, dependencies: D[] = []) {
     if(dependencies.length === 0) {
-      dependencies = getParamNames(func);
+      dependencies = getParamNames(func) as D[];
     }
-    
+
     this.data[key] = {
       func,
       isLoaded: false,
@@ -37,7 +46,7 @@ export default class Given {
     }
   }
 
-  public async get(key: string) {
+  public async get(key: keyof Partial<T>) {
     const data = this.data[key];
 
     if(data.isLoaded)
@@ -57,11 +66,11 @@ export default class Given {
   }
 
   public clear() {
-    this.data = {};
+    this.data = {} as Record<keyof Partial<T>, GivenData<keyof Partial<T>>>;
   }
 
   public async loadValues() {
-    const result: {[key: string]: any} = {};
+    const result: Partial<T> = {} as Partial<T>;
 
     for(let key in this.data) {
       result[key] = await this.get(key);

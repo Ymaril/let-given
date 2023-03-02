@@ -1,6 +1,6 @@
 import Given from "./given";
 
-export default function useGiven<T extends Record<string, any>>(
+export function useGiven<T extends Record<string, any>>(
   beforeEach: Function = global.beforeEach,
   it: Function = global.it
 ) {
@@ -33,3 +33,5 @@ export default function useGiven<T extends Record<string, any>>(
     it: itWrapper
   }
 }
+
+export default useGiven;

@@ -1,4 +1,4 @@
-const { default: useGiven } = require("../../dist/useGiven");
+const { useGiven } = require("../../dist/useGiven");
 
 const { letGiven, getGiven, it } = useGiven();
 

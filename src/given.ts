@@ -4,23 +4,6 @@ interface GivenData<T> {
   isLoaded: boolean,
   dependencies: T[]
 }
-var COMMENTS = /((\/\/.*$)|(\/\*[\s\S]*?\*\/))/mg;
-var DEFAULT_PARAMS = /=[^,]+/mg;
-var FAT_ARROWS = /=>.*$/mg;
-
-function getParamNames(fn: Function) {
-  var code = fn.toString()
-    .replace(COMMENTS, '')
-    .replace(FAT_ARROWS, '')
-    .replace(DEFAULT_PARAMS, '');
-
-  var result = code.slice(code.indexOf('(') + 1, code.indexOf(')'))
-    .match(/([^\s,]+)/g);
-
-  return result === null
-    ? []
-    : result;
-}
 
 export default class Given<T extends Record<string, any>> {
   private data: Record<
@@ -35,10 +18,6 @@ export default class Given<T extends Record<string, any>> {
     K extends keyof Partial<T>,
     D extends keyof Partial<T>
   >(key: K, func: (...args: T[D][]) => T[K] | Promise<T[K]>, dependencies: D[] = []) {
-    if(dependencies.length === 0) {
-      dependencies = getParamNames(func) as D[];
-    }
-
     this.data[key] = {
       func,
       isLoaded: false,

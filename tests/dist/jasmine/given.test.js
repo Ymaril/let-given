@@ -1,9 +1,6 @@
-import useGiven from "../../src/useGiven";
+const { useGiven } = require("../../../dist/useGiven");
 
-const { letGiven, getGiven, it } = useGiven<{
-  five: number;
-  six: number;
-}>();
+const { letGiven, it } = useGiven();
 
 describe("Example", () => {
   letGiven('five', () => 5);
@@ -34,7 +31,7 @@ describe("Example", () => {
   });
 
   describe("dependencies given", () => {
-    letGiven('six', async () => await getGiven('five') + 1)
+    letGiven('six', async five => five + 1, ['five'])
 
     it("correct", ({ six }) => {
       expect(six).toEqual(6);
@@ -50,10 +47,18 @@ describe("Example", () => {
   });
 
   describe("specify dependencies", () => {
-    letGiven('six', (five: number) => five + 1)
+    letGiven('six', (five) => five + 1, ['five'])
 
     it("correct", ({ six }) => {
       expect(six).toEqual(6);
+    });
+
+    describe("with async", () => {
+      letGiven('six', async five => five + 2, ['five']);
+
+      it("correct", ({ six }) => {
+        expect(six).toEqual(7);
+      });
     });
 
     describe("changed in nested describe", () => {

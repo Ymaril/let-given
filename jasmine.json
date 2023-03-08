@@ -1,6 +1,6 @@
 {
   "spec_dir": "tests",
-  "spec_files": ["**/*.test.ts", "**/*.test.js"],
+  "spec_files": ["*/jasmine/**/*.test.ts", "*/jasmine/**/*.test.js"],
   "helpers": [
     "../node_modules/ts-node/register/type-check.js"
   ],

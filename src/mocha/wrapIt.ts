@@ -50,7 +50,7 @@ export interface MochaWrappedItScope<T extends Record<string, any>> {
 }
 
 export default function wrapIt<T extends Record<string, any>>(given: Given<T>) {
-  const originalIt = global.it as Mocha.SuiteFunction;
+  const originalIt = global.it as unknown as Mocha.SuiteFunction;
 
   const result = {} as Record<string, any>;
 

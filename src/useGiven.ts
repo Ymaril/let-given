@@ -1,45 +1,15 @@
 import Given from "./given";
+import jasmineWrapIt from "./jasmine/wrapIt";
+import mochaWrapIt from "./mocha/wrapIt";
 
-function getItScope() {
-  return {
-    it: global.it,
-    fit: global.fit,
-    xit: global.xit
-  }
+function getWrappedItScope<T extends Record<string, any>>(given: Given<T>) {
+  const wrapper = global.jasmine ? jasmineWrapIt : mochaWrapIt; 
+
+  return wrapper(given);
 }
 
-interface ItScope {
-  it: Function,
-  fit: Function,
-  xit: Function
-}
-
-export function useGiven<T extends Record<string, any>>(
-  beforeEach: Function = global.beforeEach,
-  itScope?: Record<string, Function>
-) {
-  if(!itScope)
-    itScope = getItScope();
-
+export function useGiven<T extends Record<string, any>, K = ReturnType<typeof getWrappedItScope>>() {
   const given = new Given<T>();
-
-  const wrappedItScope = Object.keys(itScope).reduce((acc, key) => {
-    function wrappedIt(expectation: string, assertion?: (given: Partial<T>, ...args: any) => void, timeout?: number | undefined) {
-      itScope![key](expectation, async (...args: any[]) => {
-        const givens = await given.loadValues();
-    
-        if(assertion) { 
-          await Promise.resolve(assertion(givens, ...args));
-        }
-        
-        given.clear();
-      }, timeout);
-    }
-    
-    acc[key] = wrappedIt;
-
-    return acc; 
-  }, {} as Record<string, (expectation: string, assertion?: (given: Partial<T>, ...args: any) => void, timeout?: number | undefined) => void>)
 
   return {
     letGiven<
@@ -50,7 +20,7 @@ export function useGiven<T extends Record<string, any>>(
         given.add(key, func, dependencies);
       });
     },
-    ...wrappedItScope as Record<keyof ItScope, (expectation: string, assertion?: (given: Partial<T>, ...args: any) => void, timeout?: number | undefined) => void>
+    ...getWrappedItScope(given) as K
   }
 }
 

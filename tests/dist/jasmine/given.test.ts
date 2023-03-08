@@ -1,4 +1,4 @@
-import useGiven from "../../../src/jasmine";
+import useGiven from "../../../dist/jasmine";
 
 const { letGiven, it, xit } = useGiven<{
   five: number;

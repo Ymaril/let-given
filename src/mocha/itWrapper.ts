@@ -1,6 +1,5 @@
 import Given from "../given";
-import { itWrapper } from "../itWrapper";
-import baseUseGiven from "../useGiven";
+import baseItWrapper from "../itWrapper";
 
 export interface MochaWrappedItScope<T extends Record<string, any>> {
   it: {
@@ -49,14 +48,14 @@ export interface MochaWrappedItScope<T extends Record<string, any>> {
   }
 }
 
-export default function wrapIt<T extends Record<string, any>>(given: Given<T>) {
+export default function itWrapper<T extends Record<string, any>>(given: Given<T>) {
   const originalIt = global.it as unknown as Mocha.SuiteFunction;
 
   const result = {} as Record<string, any>;
 
-  result['it'] = itWrapper(originalIt, given);
-  result['it']['only'] = itWrapper(originalIt.only, given);
-  result['it']['skip'] = itWrapper(originalIt.skip, given);
+  result['it'] = baseItWrapper(originalIt, given);
+  result['it']['only'] = baseItWrapper(originalIt.only, given);
+  result['it']['skip'] = baseItWrapper(originalIt.skip, given);
 
   return result as MochaWrappedItScope<T>;
 }

@@ -1,5 +1,5 @@
 import Given from "../given";
-import { itWrapper } from "../itWrapper";
+import baseItWrapper from "../itWrapper";
 
 type JasmineWrappedImplementationCallback<T extends Record<string, any>> =
   (given: Partial<T>, ...args: any) => void | PromiseLike<any>;
@@ -31,10 +31,10 @@ export interface JasmineWrappedItScope<T extends Record<string, any>> {
   xit(expectation: string, assertion?: JasmineWrappedImplementationCallback<T>, timeout?: number): void;
 }
 
-export default function wrapIt<T extends Record<string, any>>(given: Given<T>) {
+export default function itWrapper<T extends Record<string, any>>(given: Given<T>) {
   return {
-    it: itWrapper(global.it, given),
-    fit: itWrapper(global.fit, given),
-    xit: itWrapper(global.xit, given)
+    it: baseItWrapper(global.it, given),
+    fit: baseItWrapper(global.fit, given),
+    xit: baseItWrapper(global.xit, given)
   } as JasmineWrappedItScope<T>
 }

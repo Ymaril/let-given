@@ -1,5 +1,5 @@
 import Given from "../given";
-import { itWrapper } from "../itWrapper";
+import baseItWrapper from "../itWrapper";
 
 type JestWrappedProvidesCallback<T extends Record<string, any>> =
   (given: Partial<T>, ...args: any) => void | PromiseLike<any>;
@@ -86,14 +86,14 @@ export interface JestWrappedItScope<T extends Record<string, any>> {
   xtest: WrappedJestIt<T>;
 }
 
-export default function wrapIt<T extends Record<string, any>>(given: Given<T>) {
+export default function itWrapper<T extends Record<string, any>>(given: Given<T>) {
   const globalCopy = global as any;
 
   return ['it', 'fit', 'xit', 'test', 'xtest'].reduce((acc, functionName) => {
-    acc[functionName] = itWrapper(globalCopy[functionName], given);
+    acc[functionName] = baseItWrapper(globalCopy[functionName], given);
     
     ['only', 'failing', 'skip', 'todo', 'concurrent'].forEach(secondLevelFunctionName => {
-      acc[functionName][secondLevelFunctionName] = itWrapper(globalCopy[functionName][secondLevelFunctionName], given);
+      acc[functionName][secondLevelFunctionName] = baseItWrapper(globalCopy[functionName][secondLevelFunctionName], given);
     });
 
     return acc;

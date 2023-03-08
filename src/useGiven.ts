@@ -1,21 +1,22 @@
 import currentTestFramework, { TestFramework } from "./currentTestFramework";
 import Given from "./given";
-import jasmineWrapIt from "./jasmine/wrapIt";
-import mochaWrapIt from "./mocha/wrapIt";
-import jestWrapIt from "./jest/wrapIt";
+import jasmineItWrapper from "./jasmine/itWrapper";
+import mochaItWrapper from "./mocha/itWrapper";
+import jestItWrapper from "./jest/itWrapper";
+import baseItWrapper from "./itWrapper";
 
-function getWrappedItScope<T extends Record<string, any>>(given: Given<T>) {
+function getItWrapper() {
   switch(currentTestFramework()) {
     case TestFramework.jasmine:
-      return jasmineWrapIt(given);
+      return jasmineItWrapper;
     case TestFramework.mocha:
-      return mochaWrapIt(given);
+      return mochaItWrapper;
     case TestFramework.jest:
-      return jestWrapIt(given);
+      return jestItWrapper;
   }
 }
 
-export function useGiven<T extends Record<string, any>, K = ReturnType<typeof getWrappedItScope>>() {
+export function baseUseGiven<T extends Record<string, any>, K>(itWrapper: (given: Given<T>) => K) {
   const given = new Given<T>();
 
   return {
@@ -27,8 +28,32 @@ export function useGiven<T extends Record<string, any>, K = ReturnType<typeof ge
         given.add(key, func, dependencies);
       });
     },
-    ...getWrappedItScope(given) as K
+    ...itWrapper(given)
   }
+}
+
+function itToBeWrapper<X extends Record<string, Function>>(toBeWrapped: X) {
+  return function itWrapper<T extends Record<string, any>>(given: Given<T>) {
+    const result = {} as Record<string, any>;
+
+    for(let toBeWrappedKey in toBeWrapped) {
+      result[toBeWrappedKey] = baseItWrapper(toBeWrapped[toBeWrappedKey], given);
+    }
+
+    return result as Record<keyof X, ReturnType<typeof baseItWrapper>>;
+  }
+}
+
+export function useGivenWithWrapper<T extends Record<string, any>, K extends Record<string, Function>>(toBeWrapped: K) {
+  const itWrapper = itToBeWrapper(toBeWrapped);
+
+  return baseUseGiven<T, ReturnType<typeof itWrapper>>(itWrapper);
+}
+
+export function useGiven<T extends Record<string, any>>() {
+  const itWrapper = getItWrapper();
+
+  return baseUseGiven<T, ReturnType<typeof itWrapper>>(itWrapper);
 }
 
 export default useGiven;

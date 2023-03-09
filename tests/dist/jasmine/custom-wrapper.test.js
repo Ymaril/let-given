@@ -35,7 +35,7 @@ describe("Example with custom wrapper", () => {
   });
 
   describe("dependencies given", () => {
-    letGiven('six', async five => five + 1, ['five']);
+    letGiven('six', async ({ five }) => five + 1, ['five']);
 
     test("correct", ({ six }) => {
       expect(six).toEqual(6);
@@ -51,14 +51,14 @@ describe("Example with custom wrapper", () => {
   });
 
   describe("specify dependencies", () => {
-    letGiven('six', five => five + 1, ['five'])
+    letGiven('six', ({ five }) => five + 1, ['five'])
 
     test("correct", ({ six }) => {
       expect(six).toEqual(6);
     });
 
     describe("wtesth async", () => {
-      letGiven('six', async five => five + 2, ['five']);
+      letGiven('six', async ({ five }) => five + 2, ['five']);
 
       test("correct", ({ six }) => {
         expect(six).toEqual(7);

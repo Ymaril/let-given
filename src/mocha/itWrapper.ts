@@ -1,4 +1,4 @@
-import Given from "../given";
+import Given from "../Given";
 import baseItWrapper from "../itWrapper";
 
 export interface MochaWrappedItScope<T extends Record<string, any>> {

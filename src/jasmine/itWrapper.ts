@@ -1,4 +1,4 @@
-import Given from "../given";
+import Given from "../Given";
 import baseItWrapper from "../itWrapper";
 
 type JasmineWrappedImplementationCallback<T extends Record<string, any>> =

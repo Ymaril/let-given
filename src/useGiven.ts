@@ -1,5 +1,5 @@
 import currentTestFramework, { TestFramework } from "./currentTestFramework";
-import Given from "./given";
+import Given from "./Given";
 import jasmineItWrapper from "./jasmine/itWrapper";
 import mochaItWrapper from "./mocha/itWrapper";
 import jestItWrapper from "./jest/itWrapper";
@@ -23,7 +23,7 @@ export function baseUseGiven<T extends Record<string, any>, K>(itWrapper: (given
     letGiven<
       K extends keyof Partial<T>,
       D extends keyof Partial<T>
-    >(key: K, func: (...args: T[D][]) => T[K] | Promise<T[K]>, dependencies: D[] = [])  {
+    >(key: K, func: (given: Record<D, T[D]>) => (T[K] | Promise<T[K]>), dependencies: D[] = [])  {
       beforeEach(() => {
         given.add(key, func, dependencies);
       });

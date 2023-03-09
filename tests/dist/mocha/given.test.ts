@@ -39,7 +39,7 @@ describe("Example", () => {
   });
 
   describe("dependencies given", () => {
-    letGiven('six', async five => five + 1, ['five']);
+    letGiven('six', async ({ five }) => five + 1, ['five']);
 
     it("correct", ({ six }) => {
       assert.equal(six, 6);
@@ -55,14 +55,14 @@ describe("Example", () => {
   });
 
   describe("specify dependencies", () => {
-    letGiven('six', (five: number) => five + 1, ['five'])
+    letGiven('six', ({ five }) => five + 1, ['five'])
 
     it("correct", ({ six }) => {
       assert.equal(six, 6);
     });
 
     describe("with async", () => {
-      letGiven('six', async five => five + 2, ['five']);
+      letGiven('six', async ({ five }) => five + 2, ['five']);
 
       it("correct", ({ six }) => {
         assert.equal(six, 7);

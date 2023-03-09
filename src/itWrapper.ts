@@ -1,4 +1,4 @@
-import Given from "./given";
+import Given from "./Given";
 
 export default function itWrapper<T extends Record<string, any>>(it: Function, given: Given<T>) {
   return function wrappedIt(expectation: string, assertion?: (this: any, given: Partial<T>, ...args: any) => any, ...args: any[]) {

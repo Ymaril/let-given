@@ -31,12 +31,12 @@ export default class Given<T extends Record<string, any>> {
     if(data.isLoaded)
       return data.value;
 
-    const args = [];
+    const given: Partial<T> = {} as Partial<T>;
     for(let dependecy_key of data.dependencies) {
-      args.push(await this.get(dependecy_key));
+      given[dependecy_key] = await this.get(dependecy_key);
     }
 
-    const value: any = await Promise.resolve(data.func(...args));
+    const value: any = await Promise.resolve(data.func(given));
 
     data.isLoaded = true;
     data.value = value;

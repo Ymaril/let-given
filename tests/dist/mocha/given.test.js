@@ -51,6 +51,31 @@ describe("Example", () => {
     });
   });
 
+  describe("super", () => {
+    letGiven('five', ({ five }) => five + 5, ['five']);
+
+    it("success", ({ five }) => {
+      assert.equal(five, 10);
+    });
+
+    describe("nested", () => {
+      letGiven('five', ({ five }) => five - 2, ['five']);
+  
+      it("success", ({ five }) => {
+        assert.equal(five, 8);
+      });
+
+      describe("depend from another given", () => {
+        letGiven('six', () => 6);
+        letGiven('five', ({ five, six }) => five + six, ['five', 'six']);
+
+        it("success", ({ five }) => {
+          assert.equal(five, 14);
+        });
+      });
+    });
+  });
+
   describe("specify dependencies", () => {
     letGiven('six', ({ five }) => five + 1, ['five'])
 

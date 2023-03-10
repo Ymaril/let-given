@@ -40,6 +40,31 @@ describe("Example with custom wrapper", () => {
     })
   });
 
+  describe("super", () => {
+    letGiven('five', ({ five }) => five + 5, ['five']);
+
+    test("success", ({ five }) => {
+      expect(five).toEqual(10);
+    });
+
+    describe("nested", () => {
+      letGiven('five', ({ five }) => five - 2, ['five']);
+  
+      test("success", ({ five }) => {
+        expect(five).toEqual(8);
+      });
+
+      describe("depend from another given", () => {
+        letGiven('six', () => 6);
+        letGiven('five', ({ five, six }) => five + six, ['five', 'six']);
+
+        test("success", ({ five }) => {
+          expect(five).toEqual(14);
+        });
+      });
+    });
+  });
+
   describe("dependencies given", () => {
     letGiven('six', async ({ five }) => five + 1, ['five']);
 

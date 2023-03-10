@@ -1,6 +1,6 @@
 import useGiven from "../../../src/jasmine";
 
-const { letGiven, it, xit } = useGiven<{
+const { letGiven, it, fit, xit } = useGiven<{
   five: number;
   six: number;
 }>();
@@ -49,6 +49,31 @@ describe("Example", () => {
 
       it("correct used new value", ({ six }) => {
         expect(six).toEqual(11);
+      });
+    });
+  });
+
+  describe("super", () => {
+    letGiven('five', ({ five }) => five + 5, ['five']);
+
+    it("success", ({ five }) => {
+      expect(five).toEqual(10);
+    });
+
+    describe("nested", () => {
+      letGiven('five', ({ five }) => five - 2, ['five']);
+  
+      it("success", ({ five }) => {
+        expect(five).toEqual(8);
+      });
+
+      describe("depend from another given", () => {
+        letGiven('six', () => 6);
+        letGiven('five', ({ five, six }) => five + six, ['five', 'six']);
+
+        it("success", ({ five }) => {
+          expect(five).toEqual(14);
+        });
       });
     });
   });

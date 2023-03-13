@@ -17,7 +17,10 @@ export default class Given<T extends Record<string, any>> {
   public add<
     K extends keyof Partial<T>,
     D extends keyof Partial<T>
-  >(key: K, func: (...args: T[D][]) => T[K] | Promise<T[K]>, dependencies: D[] = []) {
+  >(key: K, func: (given: Record<D, T[D]>) => (T[K] | Promise<T[K]>), dependencies: D[] = []) {
+    if(this.isCircularDependency(key, dependencies.filter(d => key as any !== d as any)))
+      throw `letGiven '${String(key)}' circular dependency`;
+    
     if(!this.data[key])
       this.data[key] = [];
 
@@ -26,6 +29,30 @@ export default class Given<T extends Record<string, any>> {
       isLoaded: false,
       dependencies
     });
+  }
+
+  private isCircularDependency(checkedKey: keyof Partial<T>, currentDependencies: Array<keyof Partial<T>>) {
+    if(currentDependencies.includes(checkedKey))
+      return true;
+
+    for(let dependency of currentDependencies) {
+      if(this.isCircularDependency(checkedKey, this.getAllDependencies(dependency))) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  private getAllDependencies(key: keyof Partial<T>) {
+    if(!this.data[key])
+      return [];
+
+    return this.data[key].reduce((acc, currentValue) => {
+      return acc.concat(
+        currentValue.dependencies.filter(el => !acc.includes(el) && el !== key)
+      );
+    }, [] as Array<keyof Partial<T>>)
   }
 
   public async get(key: keyof Partial<T>, level?: number) {

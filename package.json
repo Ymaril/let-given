@@ -1,10 +1,11 @@
 {
   "name": "let-given",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "license": "MIT",
   "main": "dist/useGiven.js",
   "typings": "dist/useGiven.d.ts",
   "repository": "github:Ymaril/let-given",
+  "exports": "./dist/",
   "scripts": {
     "test": "yarn test:dev",
     "test:dev": "yarn test:dev:jasmine && yarn test:dev:mocha && yarn test:dev:jest",

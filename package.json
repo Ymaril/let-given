@@ -4,6 +4,7 @@
   "license": "MIT",
   "main": "dist/useGiven.js",
   "typings": "dist/useGiven.d.ts",
+  "repository": "github:Ymaril/let-given",
   "scripts": {
     "test": "yarn test:dev",
     "test:dev": "yarn test:dev:jasmine && yarn test:dev:mocha && yarn test:dev:jest",

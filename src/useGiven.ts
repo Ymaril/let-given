@@ -19,6 +19,8 @@ function getItWrapper() {
 export function baseUseGiven<T extends Record<string, any>, K>(itWrapper: (given: Given<T>) => K) {
   const given = new Given<T>();
 
+  afterEach(() => given.clear());
+
   return {
     letGiven<
       K extends keyof Partial<T>,

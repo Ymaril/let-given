@@ -2,7 +2,8 @@ interface GivenData<T> {
   func: Function,
   value?: any,
   isLoaded: boolean,
-  dependencies: T[]
+  dependencies: T[],
+  promise?: Promise<any>
 }
 
 export default class Given<T extends Record<string, any>> {
@@ -55,31 +56,43 @@ export default class Given<T extends Record<string, any>> {
     }, [] as Array<keyof Partial<T>>)
   }
 
-  public async get(key: keyof Partial<T>, level?: number) {
+  public get(key: keyof Partial<T>, level?: number) {
+    if(!this.data[key])
+      return Promise.resolve(undefined)
+
     if(typeof level === 'undefined')
       level = this.data[key].length - 1;
 
     const data = this.data[key][level];
 
-    if(data.isLoaded)
-      return data.value;
-
-    const given: Partial<T> = {} as Partial<T>;
-    for(let dependecy_key of data.dependencies) {
-      if(dependecy_key === key) {
-        given[dependecy_key] = await this.get(dependecy_key, level - 1);
-      }
-      else {
-        given[dependecy_key] = await this.get(dependecy_key);
-      }
+    if(data.isLoaded) {
+      return Promise.resolve(data.value);
+    }
+    else if(data.promise) {
+      return data.promise;
     }
 
-    const value: any = await Promise.resolve(data.func(given));
+    const dependencyPromises: Promise<any>[] = data.dependencies.map(dependecy_key =>
+      this
+        .get(dependecy_key, dependecy_key === key ? level! - 1 : undefined)
+        .then((v: any) => ([dependecy_key, v]))
+    );
 
-    data.isLoaded = true;
-    data.value = value;
+    data.promise = Promise.all(dependencyPromises).then(value =>
+      value.reduce((acc, currentValue) => {
+        acc[currentValue[0] as keyof T] = currentValue[1];
 
-    return value;
+        return acc;
+      }, {} as Partial<T>)
+    ).then(given => Promise.resolve(data.func(given)))
+      .then(value => {
+        data.value = value
+        data.isLoaded = true;
+
+        return value;
+      })
+
+    return data.promise;
   }
 
   public clear() {

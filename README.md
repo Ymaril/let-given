@@ -161,7 +161,8 @@ describe("with simple name", () => {
 let-given has strong typescript typing
 
 ```js
-import useGiven from "let-given/jasmine"; // In a typescript, you must specify a test framework
+// In a typescript, you must specify a test framework
+import useGiven from "let-given/dist/jasmine"; // There are available: "let-given/dist/jasmine", "let-given/dist/mocha", "let-given/dist/jest"
 
 interface Given {
   name: string

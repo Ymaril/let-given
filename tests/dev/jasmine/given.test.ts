@@ -9,7 +9,7 @@ const given = new Given<letGiven>();
 
 describe("Example", () => {
   beforeEach(() => {
-    given.add('five', () => 5);
+    given.add("five", () => 5);
   });
 
   it("simple test", async () => {
@@ -20,12 +20,12 @@ describe("Example", () => {
 
   describe("circular dependency", () => {
     beforeEach(() => {
-      given.add('five', ({ six }) => six + 5, ['six']);
+      given.add("five", ({ six }) => six + 5, ["six"]);
     });
 
     it("throw error", () => {
       expect(() => {
-        given.add('six', ({ five }) => five + 5, ['five'])
+        given.add("six", ({ five }) => five + 5, ["five"]);
       }).toThrow("letGiven 'six' circular dependency");
     });
   });
@@ -44,46 +44,39 @@ interface letGiven {
 const given2 = new Given<letGiven>();
 
 function sleep() {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     setTimeout(resolve, 1000);
-  })
+  });
 }
 
-/*
-
-a -> b -> d
-       -> e
-  
-  -> c
-*/
 describe("optimal loading", () => {
   let originalTimeout: number;
 
   beforeEach(() => {
-    given2.add('a', sleep, ['b', 'c']);
+    given2.add("a", sleep, ["b", "c"]);
 
-    given2.add('b', sleep, ['d', 'e']);
-    given2.add('c', sleep, ['f', 'g']);
+    given2.add("b", sleep, ["d", "e"]);
+    given2.add("c", sleep, ["f", "g"]);
 
-    given2.add('d', sleep);
-    given2.add('e', sleep);
+    given2.add("d", sleep);
+    given2.add("e", sleep);
 
-    given2.add('f', sleep);
-    given2.add('g', sleep);
-    
+    given2.add("f", sleep);
+    given2.add("g", sleep);
+
     originalTimeout = jasmine.DEFAULT_TIMEOUT_INTERVAL;
     jasmine.DEFAULT_TIMEOUT_INTERVAL = 10000;
   });
 
-  afterEach(function() {
+  afterEach(() => {
     jasmine.DEFAULT_TIMEOUT_INTERVAL = originalTimeout;
   });
 
-  it('success', async () => {
+  it("success", async () => {
     const startTime = Date.now();
 
     await given2.loadValues();
-    
+
     const endTime = Date.now();
 
     expect(endTime - startTime).toBeLessThan(3500); //expected 3 seconds

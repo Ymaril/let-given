@@ -9,7 +9,10 @@ export interface MochaWrappedItScope<T extends Record<string, any>> {
      *
      * - _Only available when invoked via the mocha CLI._
      */
-    (title: string, fn: (this: Mocha.Suite, given: Partial<T>) => void): Mocha.Suite;
+    (
+      title: string,
+      fn: (this: Mocha.Suite, given: Partial<T>) => void
+    ): Mocha.Suite;
     /**
      * [qunit] Describe a "suite" with the given `title`.
      *
@@ -28,7 +31,10 @@ export interface MochaWrappedItScope<T extends Record<string, any>> {
        *
        * - _Only available when invoked via the mocha CLI._
        */
-      (title: string, fn: (this: Mocha.Suite, given: Partial<T>) => void): Mocha.Suite;
+      (
+        title: string,
+        fn: (this: Mocha.Suite, given: Partial<T>) => void
+      ): Mocha.Suite;
       /**
        * [qunit] Describe a "suite" with the given `title`. Indicates this suite should be executed
        * exclusively.
@@ -43,19 +49,24 @@ export interface MochaWrappedItScope<T extends Record<string, any>> {
      * - _Only available when invoked via the mocha CLI._
      */
     skip: {
-      (title: string, fn: (this: Mocha.Suite, given: Partial<T>) => void): Mocha.Suite | void;
+      (
+        title: string,
+        fn: (this: Mocha.Suite, given: Partial<T>) => void
+      ): Mocha.Suite | void;
     };
-  }
+  };
 }
 
-export default function itWrapper<T extends Record<string, any>>(given: Given<T>) {
+export default function itWrapper<T extends Record<string, any>>(
+  given: Given<T>
+) {
   const originalIt = global.it as unknown as Mocha.SuiteFunction;
 
   const result = {} as Record<string, any>;
 
-  result['it'] = baseItWrapper(originalIt, given);
-  result['it']['only'] = baseItWrapper(originalIt.only, given);
-  result['it']['skip'] = baseItWrapper(originalIt.skip, given);
+  result["it"] = baseItWrapper(originalIt, given);
+  result["it"]["only"] = baseItWrapper(originalIt.only, given);
+  result["it"]["skip"] = baseItWrapper(originalIt.skip, given);
 
   return result as MochaWrappedItScope<T>;
 }

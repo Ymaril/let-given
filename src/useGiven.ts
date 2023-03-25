@@ -6,7 +6,7 @@ import jestItWrapper from "./jest/itWrapper";
 import baseItWrapper from "./itWrapper";
 
 function getItWrapper() {
-  switch(currentTestFramework()) {
+  switch (currentTestFramework()) {
     case TestFramework.jasmine:
       return jasmineItWrapper;
     case TestFramework.mocha:
@@ -16,37 +16,46 @@ function getItWrapper() {
   }
 }
 
-export function baseUseGiven<T extends Record<string, any>, K>(itWrapper: (given: Given<T>) => K) {
+export function baseUseGiven<T extends Record<string, any>, K>(
+  itWrapper: (given: Given<T>) => K
+) {
   const given = new Given<T>();
 
   afterEach(() => given.clear());
 
   return {
-    letGiven<
-      K extends keyof Partial<T>,
-      D extends keyof Partial<T>
-    >(key: K, func: (given: Record<D, T[D]>) => (T[K] | Promise<T[K]>), dependencies: D[] = [])  {
+    letGiven<K extends keyof Partial<T>, D extends keyof Partial<T>>(
+      key: K,
+      func: (given: Record<D, T[D]>) => T[K] | Promise<T[K]>,
+      dependencies: D[] = []
+    ) {
       beforeEach(() => {
         given.add(key, func, dependencies);
       });
     },
-    ...itWrapper(given)
-  }
+    ...itWrapper(given),
+  };
 }
 
 function itToBeWrapper<X extends Record<string, Function>>(toBeWrapped: X) {
   return function itWrapper<T extends Record<string, any>>(given: Given<T>) {
     const result = {} as Record<string, any>;
 
-    for(let toBeWrappedKey in toBeWrapped) {
-      result[toBeWrappedKey] = baseItWrapper(toBeWrapped[toBeWrappedKey], given);
+    for (let toBeWrappedKey in toBeWrapped) {
+      result[toBeWrappedKey] = baseItWrapper(
+        toBeWrapped[toBeWrappedKey],
+        given
+      );
     }
 
     return result as Record<keyof X, ReturnType<typeof baseItWrapper>>;
-  }
+  };
 }
 
-export function useGivenWithWrapper<T extends Record<string, any>, K extends Record<string, Function>>(toBeWrapped: K) {
+export function useGivenWithWrapper<
+  T extends Record<string, any>,
+  K extends Record<string, Function>
+>(toBeWrapped: K) {
   const itWrapper = itToBeWrapper(toBeWrapped);
 
   return baseUseGiven<T, ReturnType<typeof itWrapper>>(itWrapper);

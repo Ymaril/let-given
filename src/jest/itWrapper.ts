@@ -1,8 +1,10 @@
 import Given from "../Given";
 import baseItWrapper from "../itWrapper";
 
-type JestWrappedProvidesCallback<T extends Record<string, any>> =
-  (given: Partial<T>, ...args: any) => void | PromiseLike<any>;
+type JestWrappedProvidesCallback<T extends Record<string, any>> = (
+  given: Partial<T>,
+  ...args: any
+) => void | PromiseLike<any>;
 
 interface WrappedJestIt<T extends Record<string, any>> {
   /**
@@ -16,25 +18,45 @@ interface WrappedJestIt<T extends Record<string, any>> {
   /**
    * Only runs this test in the current file.
    */
-  only: (name: string, fn?: JestWrappedProvidesCallback<T>, timeout?: number) => void;
+  only: (
+    name: string,
+    fn?: JestWrappedProvidesCallback<T>,
+    timeout?: number
+  ) => void;
   /**
    * Mark this test as expecting to fail.
    *
    * Only available in the default `jest-circus` runner.
    */
-  failing: (name: string, fn?: JestWrappedProvidesCallback<T>, timeout?: number) => void;
+  failing: (
+    name: string,
+    fn?: JestWrappedProvidesCallback<T>,
+    timeout?: number
+  ) => void;
   /**
    * Skips running this test in the current file.
    */
-  skip: (name: string, fn?: JestWrappedProvidesCallback<T>, timeout?: number) => void;
+  skip: (
+    name: string,
+    fn?: JestWrappedProvidesCallback<T>,
+    timeout?: number
+  ) => void;
   /**
    * Sketch out which tests to write in the future.
    */
-  todo: (name: string, fn?: JestWrappedProvidesCallback<T>, timeout?: number) => void;
+  todo: (
+    name: string,
+    fn?: JestWrappedProvidesCallback<T>,
+    timeout?: number
+  ) => void;
   /**
    * Experimental and should be avoided.
    */
-  concurrent: (name: string, fn?: JestWrappedProvidesCallback<T>, timeout?: number) => void;
+  concurrent: (
+    name: string,
+    fn?: JestWrappedProvidesCallback<T>,
+    timeout?: number
+  ) => void;
   /**
    * Use if you keep duplicating the same test with different data. `.each` allows you to write the
    * test once and pass data in.
@@ -86,16 +108,23 @@ export interface JestWrappedItScope<T extends Record<string, any>> {
   xtest: WrappedJestIt<T>;
 }
 
-export default function itWrapper<T extends Record<string, any>>(given: Given<T>) {
+export default function itWrapper<T extends Record<string, any>>(
+  given: Given<T>
+) {
   const globalCopy = global as any;
 
-  return ['it', 'fit', 'xit', 'test', 'xtest'].reduce((acc, functionName) => {
+  return ["it", "fit", "xit", "test", "xtest"].reduce((acc, functionName) => {
     acc[functionName] = baseItWrapper(globalCopy[functionName], given);
-    
-    ['only', 'failing', 'skip', 'todo', 'concurrent'].forEach(secondLevelFunctionName => {
-      acc[functionName][secondLevelFunctionName] = baseItWrapper(globalCopy[functionName][secondLevelFunctionName], given);
-    });
+
+    ["only", "failing", "skip", "todo", "concurrent"].forEach(
+      (secondLevelFunctionName) => {
+        acc[functionName][secondLevelFunctionName] = baseItWrapper(
+          globalCopy[functionName][secondLevelFunctionName],
+          given
+        );
+      }
+    );
 
     return acc;
-  }, {} as Record<string, any>) as JestWrappedItScope<T>
+  }, {} as Record<string, any>) as JestWrappedItScope<T>;
 }

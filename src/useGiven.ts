@@ -24,7 +24,7 @@ export function baseUseGiven<T extends Record<string, any>, K>(
   afterEach(() => given.clear());
 
   return {
-    letGiven<K extends keyof Partial<T>, D extends keyof Partial<T>>(
+    letGiven<K extends keyof Partial<T>, D extends keyof Partial<T> = never>(
       key: K,
       func: (given: Record<D, T[D]>) => T[K] | Promise<T[K]>,
       dependencies: D[] = []

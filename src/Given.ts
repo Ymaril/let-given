@@ -111,13 +111,17 @@ export default class Given<T extends Record<string, any>> {
     >;
   }
 
-  public async loadValues() {
-    const result: Partial<T> = {} as Partial<T>;
+  public loadValues() {
+    return Promise.all(
+      Object.keys(this.data).map((key) =>
+        this.get(key).then((value) => [key, value])
+      )
+    ).then((results) =>
+      results.reduce((acc, currentValue) => {
+        acc[currentValue[0] as keyof T] = currentValue[1];
 
-    for (let key in this.data) {
-      result[key] = await this.get(key);
-    }
-
-    return result;
+        return acc;
+      }, {} as Partial<T>)
+    );
   }
 }

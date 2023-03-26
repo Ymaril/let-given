@@ -1,4 +1,4 @@
-import useGiven from "../../../dist/jest";
+import useGiven from "let-given-dist/jest";
 
 const { letGiven, it, xit } = useGiven<{
   five: number;

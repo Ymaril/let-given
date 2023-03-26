@@ -1,4 +1,4 @@
-import { useGivenWithWrapper } from "../../../src/useGiven";
+import { useGivenWithWrapper } from "../../../src";
 
 const testUI = {
   test: global.it,

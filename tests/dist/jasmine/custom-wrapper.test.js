@@ -1,4 +1,4 @@
-const { useGivenWithWrapper } = require("../../../dist/useGiven");
+const { useGivenWithWrapper } = require("let-given-dist");
 
 const testUI = {
   test: global.it,

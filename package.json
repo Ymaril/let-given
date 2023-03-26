@@ -1,10 +1,75 @@
 {
   "name": "let-given",
-  "version": "0.2.3",
+  "version": "0.3.0",
   "license": "MIT",
-  "main": "dist/useGiven.js",
-  "typings": "dist/useGiven.d.ts",
+  "types": "./lib/types/index.d.ts",
+  "main": "./lib/cjs/index.js",
   "repository": "github:Ymaril/let-given",
+  "typesVersions": {
+    "*": {
+      ".": [
+        "./lib/types/index.d.ts"
+      ],
+      "jasmine": [
+        "./lib/types/jasmine/index.d.ts"
+      ],
+      "mocha": [
+        "./lib/types/mocha/index.d.ts"
+      ],
+      "jest": [
+        "./lib/types/jest/index.d.ts"
+      ]
+    }
+  },
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./lib/types/index.d.ts",
+        "default": "./lib/esm/index.js"
+      },
+      "require": {
+        "types": "./lib/types/index.d.ts",
+        "default": "./lib/cjs/index.js"
+      },
+      "default": "./lib/cjs/index.js"
+    },
+    "./jasmine": {
+      "import": {
+        "types": "./lib/types/jasmine/index.d.ts",
+        "default": "./lib/esm/jasmine/index.js"
+      },
+      "require": {
+        "types": "./lib/types/jasmine/index.d.ts",
+        "default": "./lib/cjs/jasmine/index.js"
+      },
+      "default": "./lib/cjs/jasmine/index.js"
+    },
+    "./mocha": {
+      "import": {
+        "types": "./lib/types/mocha/index.d.ts",
+        "default": "./lib/esm/mocha/index.js"
+      },
+      "require": {
+        "types": "./lib/types/mocha/index.d.ts",
+        "default": "./lib/cjs/mocha/index.js"
+      },
+      "default": "./lib/cjs/mocha/index.js"
+    },
+    "./jest": {
+      "import": {
+        "types": "./lib/types/jest/index.d.ts",
+        "default": "./lib/esm/jest/index.js"
+      },
+      "require": {
+        "types": "./lib/types/jest/index.d.ts",
+        "default": "./lib/cjs/jest/index.js"
+      },
+      "default": "./lib/cjs/jest/index.js"
+    }
+  },
+  "files": [
+    "lib/**/*"
+  ],
   "scripts": {
     "test": "yarn test:dev",
     "test:dev": "yarn test:dev:jasmine && yarn test:dev:mocha && yarn test:dev:jest",
@@ -15,13 +80,25 @@
     "test:dist:jasmine": "jasmine --config=jasmine.json \"tests/dist/jasmine/**/*\"",
     "test:dist:mocha": "mocha --require ts-node/register \"tests/dist/mocha/**/*\"",
     "test:dist:jest": "jest \"tests/dist/jest/.*\"",
-    "build": "tsc --project tsconfig.build.json"
+    "clean": "yarn clean:dist && yarn clean:module",
+    "clean:dist": "rm -rf ./dist",
+    "clean:module": "rm -rf ./node_modules/let-given",
+    "build": "yarn clean && yarn build:code && yarn build:meta && yarn build:copy_module",
+    "build:code": "yarn build:esm && yarn build:cjs && yarn build:types",
+    "build:esm": "tsc -p config/tsconfig.esm.json",
+    "build:cjs": "tsc -p config/tsconfig.cjs.json",
+    "build:types": "tsc -p config/tsconfig.types.json --emitDeclarationOnly",
+    "build:meta": "yarn build:package && yarn build:readme",
+    "build:package": "npx clear-package-json package.json -o dist/package.json",
+    "build:readme": "cp README.md dist/README.md",
+    "build:copy_module": "cp -r dist node_modules/let-given-dist"
   },
   "devDependencies": {
     "@types/jasmine": "^4.0.3",
     "@types/jest": "^29.4.0",
     "@types/mocha": "^10.0.1",
     "@types/node": "^17.0.39",
+    "clean-publish": "^4.1.1",
     "jasmine": "^4.1.0",
     "jest": "^29.5.0",
     "mocha": "^10.2.0",

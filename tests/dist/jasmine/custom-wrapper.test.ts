@@ -1,4 +1,4 @@
-import { useGivenWithWrapper } from "../../../dist/useGiven";
+import { useGivenWithWrapper } from "let-given-dist";
 
 const testUI = {
   test: global.it,

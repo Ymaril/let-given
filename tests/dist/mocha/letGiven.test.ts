@@ -1,4 +1,4 @@
-import useGiven from "../../../src/mocha";
+import useGiven from "let-given-dist/mocha";
 import assert from "assert";
 
 const { letGiven, it } = useGiven<{

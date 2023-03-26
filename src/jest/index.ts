@@ -1,6 +1,8 @@
-import { baseUseGiven } from "../useGiven";
+import { baseUseGiven } from "..";
 import itWrapper, { JestWrappedItScope } from "./itWrapper";
 
-export default function useGiven<T extends Record<string, any>>() {
+export function useGiven<T extends Record<string, any>>() {
   return baseUseGiven<T, JestWrappedItScope<T>>(itWrapper);
 }
+
+export default useGiven;

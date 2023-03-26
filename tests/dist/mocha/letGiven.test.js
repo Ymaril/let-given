@@ -1,4 +1,4 @@
-const { useGiven } = require("../../../dist/useGiven");
+const { useGiven } = require("let-given-dist");
 const assert = require("assert");
 
 const { letGiven, it } = useGiven();

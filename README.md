@@ -144,7 +144,9 @@ let-given will not execute functions for variables that are redefined deeper in 
 
 ```js
 letGiven("name", async () => {
-  return await slowNameGenerator.generate(); // this code will not execute
+  // this code will not execute
+  const slowNameGenerator = await slowGenerator.generateSlowNameGenerator();
+  return await slowNameGenerator.generate();
 });
 describe("with simple name", () => {
   letGiven("name", () => "John");
@@ -162,11 +164,11 @@ let-given has strong typescript typing
 
 ```js
 // In a typescript, you must specify a test framework
-import useGiven from "let-given/dist/jasmine"; // There are available: "let-given/dist/jasmine", "let-given/dist/mocha", "let-given/dist/jest"
+import useGiven from "let-given/jasmine"; // There are available: "let-given/jasmine", "let-given/mocha", "let-given/jest"
 
 interface Given {
-  name: string
-  userParams: object
+  name: string,
+  userParams: object,
   user: User
 }
 
@@ -233,7 +235,7 @@ useGivenWithWrapper will return the wrapped functions in the same fields in whic
 
 ## Alternatives
 
-There are several work packages that implement context variables
+There are several packages that implement context variables
 - [bdd-lazy-var](https://github.com/stalniy/bdd-lazy-var)
 - [Given2](https://github.com/tatyshev/given2)
 - [givens](https://github.com/enova/givens)
@@ -249,7 +251,7 @@ These are a few advantages of using the rspec approach for context creation:
 
 ### Don't repeat yourself
 
-let-given makes it possible to describe only that part of the context that is directly relevant to the test. No need to call fixtures at the beginning of each assertation
+let-given makes it possible to describe only that part of the context that is directly relevant to the test. No need to call fixtures or something at the beginning of each assertation
 
 ### Test order
 
@@ -269,20 +271,21 @@ You can create issues on github with a description of the issue.
 You can also create a pull request with fixes.
 It is important that all tests are passed on the pull request branch.
 
-There are two test folders here: dev and dist
+There are two test folders: dev and dist
 - dev tests are designed to test functionality at the development stage
 - dist tests to test an already compiled distribution.
 
+Run only dev tests
 ```bash
-npm run test
+yarn install
+yarn test
 ```
-Run only dev tests.
 
-```bash
-npm run build
-npm run test:dist
-```
 Run dist test
+```bash
+yarn build # build dist and copy it to node_modules
+yarn test:dist # test let-given package from node_modules folder
+```
 
 ## License
 

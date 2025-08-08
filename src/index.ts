@@ -123,6 +123,9 @@ class SuiteTracker {
   }
 
   addVariable<T>(key: string, func: Function, dependencies: string[] = []): void {
+    // Ensure describe is wrapped if it wasn't available during construction
+    this.ensureDescribeWrapped();
+    
     const currentContext = this.getCurrentContext();
     
     // Check for duplicate variable definition in same context
@@ -376,6 +379,7 @@ export function useGiven<T extends Record<string, any>>() {
 }
 
 export default useGiven;
+
 
 
 

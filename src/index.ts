@@ -64,7 +64,15 @@ class SuiteTracker {
     const tracker = this;
     
     return function wrappedDescribe(title: string, fn: () => void, ...args: any[]) {
-      return tracker.originalDescribe(title, function(this: any) {
+      // Handle different describe function signatures (focused/skipped)
+      let actualDescribe = tracker.originalDescribe;
+      if (focused && (global as any).fdescribe) {
+        actualDescribe = (global as any).fdescribe;
+      } else if (skipped && (global as any).xdescribe) {
+        actualDescribe = (global as any).xdescribe;
+      }
+
+      return actualDescribe(title, function(this: any) {
         // Create new suite context
         const suiteContext: SuiteContext = {
           parent: tracker.getCurrentContext(),
@@ -352,5 +360,6 @@ export function useGiven<T extends Record<string, any>>() {
 }
 
 export default useGiven;
+
 
 

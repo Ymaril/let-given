@@ -4,23 +4,12 @@ import jasmineItWrapper from "./jasmine/itWrapper";
 import mochaItWrapper from "./mocha/itWrapper";
 import jestItWrapper from "./jest/itWrapper";
 import baseItWrapper from "./itWrapper";
-
-// Symbol for attaching metadata to suite contexts
-const SUITE_METADATA_SYMBOL = Symbol.for('__letGiven_suiteMetadata');
+import { VariableMetadata, VARIABLE_METADATA_SYMBOL } from "./VariableMetadata";
 
 interface SuiteContext {
   parent?: SuiteContext;
-  variables: Map<string, VariableDefinition<any>>;
   children: Set<SuiteContext>;
-}
-
-interface VariableDefinition<T> {
-  key: string;
-  func: Function;
-  dependencies: string[];
-  value?: T;
-  isEvaluated: boolean;
-  promise?: Promise<T>;
+  metadata: VariableMetadata;
 }
 
 class SuiteTracker {
@@ -379,6 +368,7 @@ export function useGiven<T extends Record<string, any>>() {
 }
 
 export default useGiven;
+
 
 
 

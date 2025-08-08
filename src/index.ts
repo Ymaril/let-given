@@ -325,6 +325,13 @@ export function baseUseGiven<T extends Record<string, any>, K>(
         given.add(key, func, dependencies);
       });
     },
+    // Provide access to suite tracker for beforeEach hooks
+    getSuiteVariable: <K extends keyof Partial<T>>(key: K): Promise<T[K]> => {
+      return suiteTracker.getVariable(key as string);
+    },
+    loadSuiteVariables: (): Promise<Partial<T>> => {
+      return suiteTracker.loadAllVariables();
+    },
     ...itWrapper(given),
   };
 }
@@ -360,6 +367,7 @@ export function useGiven<T extends Record<string, any>>() {
 }
 
 export default useGiven;
+
 
 
 

@@ -294,8 +294,13 @@ export function baseUseGiven<T extends Record<string, any>, K>(
   itWrapper: (given: Given<T>) => K
 ) {
   const given = new Given<T>();
+  const suiteTracker = getSuiteTracker();
 
-  afterEach(() => given.clear());
+  // Clear variables after each test
+  afterEach(() => {
+    given.clear();
+    suiteTracker.clearVariables();
+  });
 
   return {
     letGiven<K extends keyof Partial<T>, D extends keyof Partial<T> = never>(
@@ -303,6 +308,11 @@ export function baseUseGiven<T extends Record<string, any>, K>(
       func: (given: Record<D, T[D]>) => T[K] | Promise<T[K]>,
       dependencies: D[] = []
     ) {
+      // Register variable immediately during describe() phase, not in beforeEach
+      suiteTracker.addVariable(key as string, func, dependencies as string[]);
+      
+      // Also add to the legacy Given instance for backward compatibility
+      // This will be removed in a future task when we fully migrate
       beforeEach(() => {
         given.add(key, func, dependencies);
       });
@@ -342,4 +352,5 @@ export function useGiven<T extends Record<string, any>>() {
 }
 
 export default useGiven;
+
 

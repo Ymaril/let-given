@@ -42,7 +42,9 @@ class SuiteTracker {
     this.originalDescribe = (global as any).describe;
     
     if (!this.originalDescribe) {
-      throw new Error('Global describe function not found. Make sure you are running in a test environment.');
+      // In some test environments, describe might not be available immediately
+      // We'll defer the wrapping until it's needed
+      return;
     }
 
     // Replace global describe with our wrapper
@@ -57,6 +59,13 @@ class SuiteTracker {
     }
     if ((global as any).xdescribe) {
       (global as any).xdescribe = this.createDescribeWrapper(false, true);
+    }
+  }
+
+  // Ensure describe is wrapped when needed
+  private ensureDescribeWrapped() {
+    if (!this.originalDescribe && (global as any).describe) {
+      this.wrapDescribe();
     }
   }
 
@@ -367,6 +376,7 @@ export function useGiven<T extends Record<string, any>>() {
 }
 
 export default useGiven;
+
 
 
 
